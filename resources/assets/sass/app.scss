@@ -1,0 +1,114 @@
+
+// Fonts
+//@import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
+
+// Variables
+@import "variables";
+
+// Bootstrap
+@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+
+// Font Awesome
+$fa-font-path: "../fonts";
+@import "node_modules/font-awesome/scss/font-awesome";
+
+body {
+    background-color: #fff;
+}
+.navbar {
+    margin-bottom : 0px;
+}
+a {
+    text-decoration : none;
+    &:hover {
+        text-decoration : none;
+    }
+    &:active {
+        text-decoration : none;
+    }
+    &:visited {
+        text-decoration : none;
+    }
+    &:link {
+        text-decoration : none;
+    }
+}
+.main-sidebar {
+    background-color: #222d32;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding-top: 50px;
+    min-height: 100%;
+    width: 230px;
+    z-index: 810;
+    -webkit-transition: -webkit-transform 0.3s ease-in-out, width 0.3s ease-in-out;
+    -moz-transition: -moz-transform 0.3s ease-in-out, width 0.3s ease-in-out;
+    -o-transition: -o-transform 0.3s ease-in-out, width 0.3s ease-in-out;
+    transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
+    .sidebar {
+        padding-bottom: 10px;
+    }
+    .sidebar-menu {
+        margin-top: 10px;
+        list-style: none;
+        padding: 0;
+        > li {
+            position: relative;
+            margin: 0;
+            padding: 0;
+            > a {
+                background: #1e282c;
+                padding: 12px 5px 12px 15px;
+                display: block;
+                color: #b8c7ce;
+                &:hover {
+                    color: white;
+                }
+            }
+        }
+        li.active > a {
+            border-left-color: #3c8dbc;
+            color: #fff;
+        }
+    }
+}
+.content-wrapper{
+    -webkit-transition: -webkit-transform 0.3s ease-in-out, margin 0.3s ease-in-out;
+    -moz-transition: -moz-transform 0.3s ease-in-out, margin 0.3s ease-in-out;
+    -o-transition: -o-transform 0.3s ease-in-out, margin 0.3s ease-in-out;
+    transition: transform 0.3s ease-in-out, margin 0.3s ease-in-out;
+    margin-left: 230px;
+    min-height: 100%;
+    background-color: #fff;
+    z-index: 800;
+    padding-top: 15px;
+    .content {
+        min-height: 250px;
+        padding: 15px;
+        margin-right: auto;
+        margin-left: auto;
+        overflow: auto;
+        width: 100%;
+    }
+    .panel-default, .panel-heading {
+        border: none;
+        box-shadow: none;
+    }
+    .panel-heading {
+        text-align: center;
+    }
+    .input-group[class*="col-"] {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    .nopadding {
+        padding: 0px !important;
+    }
+    .custom {
+        margin: 0px 15px 15px !important;
+    }
+    .filter_area {
+        margin-bottom: 20px;
+    }
+}
