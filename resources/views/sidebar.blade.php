@@ -9,12 +9,14 @@
                     <span>Thông tin cá nhân</span>
                 </a>
             </li>
-            <li>
-                <a href="{!! route('user.list') !!}">
-                    <i class="fa fa-pie-chart"></i>
-                    <span>Danh sách user</span>
-                </a>
-            </li>
+            @if(Auth::user()->role == 1)
+                <li>
+                    <a href="{!! route('user.list') !!}">
+                        <i class="fa fa-pie-chart"></i>
+                        <span>Danh sách user</span>
+                    </a>
+                </li>
+            @endif
         </ul>
     </section>
     <!-- /.sidebar -->

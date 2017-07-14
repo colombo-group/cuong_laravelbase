@@ -19,9 +19,16 @@
     Auth::routes();
 
     Route::middleware(['auth'])->group(function() {
-        Route::get('/home', 'HomeController@index')->name('home');
-        Route::get('/profile/edit', 'ProfileController@edit')->name('profile.edit');
-        Route::post('/profile/update', 'ProfileController@update')->name('profile.upda');
+        Route::group(['namespace' => 'Frontend'], function() {
+            Route::get('/home', 'HomeController@index')->name('home');
+            Route::get('/profile/edit', 'ProfileController@edit')->name('profile.edit');
+            Route::post('/profile/update', 'ProfileController@update')->name('profile.upda');
+        });
 
-        Route::get('user/list', 'UsersController@index')->name('user.list');
+        Route::middleware(['admin'])->group(function() {
+            Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
+                Route::get('/', 'AdminController@index');
+                Route::get('user/list', 'UsersController@index')->name('user.list');
+            });
+        });
     });

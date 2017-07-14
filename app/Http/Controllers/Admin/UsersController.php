@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -50,7 +51,7 @@ class UsersController extends Controller
             ]);
         }
 
-        return view('users.index', compact('list'));
+        return view('admin.users.index', compact('list'));
     }
 
     /**

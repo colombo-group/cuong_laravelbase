@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Frontend;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -44,7 +45,7 @@ class ProfileController extends Controller
     {
         $data = Auth::user();
 
-        return view('profiles.edit', compact('data'));
+        return view('frontend.profiles.edit', compact('data'));
     }
 
 
