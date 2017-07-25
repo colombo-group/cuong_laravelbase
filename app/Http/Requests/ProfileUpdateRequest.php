@@ -24,7 +24,20 @@ class ProfileUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => 'required|max:255',
+            'sex' => 'required',
+            'birthday' => 'required',
+            'address' => 'required',
+        ];
+    }
+
+    public function messages() {
+        return [
+            'name.required' => 'Name không được bỏ trống',
+            'name.max' => 'Name không quá 255 ký tự',
+            'sex.required' => 'Giới tính không được bỏ trống',
+            'birthday.required' => 'Ngày sinh không được bỏ trống',
+            'address.required' => 'Địa chỉ không được bỏ trống',
         ];
     }
 }

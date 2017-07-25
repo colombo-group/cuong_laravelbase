@@ -13,7 +13,7 @@ class UserUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,20 @@ class UserUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => 'required|max:255',
+            'username' => 'required',
+            'email' => 'required|email|max:255'
+        ];
+    }
+
+    public function messages() {
+        return [
+            'name.required' => 'Name không được bỏ trống',
+            'name.max' => 'Name không quá 255 ký tự',
+            'username.required' => 'Username không được bỏ trống',
+            'email.required' => 'Email không được bỏ trống',
+            'email.email' => 'Email không đúng định dạng',
+            'email.max' => 'Email không quá 255 ký tự',
         ];
     }
 }

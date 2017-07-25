@@ -13,4 +13,8 @@ const  mix = require('laravel-mix');
 mix.js('resources/assets/js/app.js', 'public/js')
     .sass('resources/assets/sass/app.scss', 'public/css');
 mix.copy('resources/assets/js/bootstrap-datepicker.js', 'public/js/bootstrap-datepicker.js');
-mix.copy('resources/assets/css/datepicker3.css', 'public/css/datepicker3.css');
+
+mix.copy('resources/assets/js/bootstrap-fileinput.js', 'public/js/bootstrap-fileinput.js');
+
+mix.copyDirectory('resources/assets/css', 'public/css');
+mix.copyDirectory('resources/assets/tinymce', 'public/tinymce');

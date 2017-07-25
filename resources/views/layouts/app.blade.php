@@ -13,6 +13,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/datepicker3.css') }}" rel="stylesheet">
+    @yield('css')
 </head>
 <body>
     <div id="app">
@@ -86,7 +87,7 @@
 
     <script type="text/javascript">
         // To make Pace works on Ajax calls
-        $(document).ajaxStart(function() { Pace.restart(); });
+        /*$(document).ajaxStart(function() { Pace.restart(); });*/
 
         // Ajax calls should always have the CSRF token attached to them, otherwise they won't work
         $.ajaxSetup({
@@ -110,5 +111,7 @@
             location.hash = e.target.hash.replace("#tab_", "#");
         });
     </script>
+    @yield('script')
+    @stack('scripts')
 </body>
 </html>

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -31,6 +32,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     use Notifiable;
+    use SoftDeletes;
+
+    protected $dates = ['deleted_at'];
 
     /**
      * The attributes that are mass assignable.
@@ -38,7 +42,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'sex', 'birthday', 'address', 'slogan'
+        'name', 'username', 'email', 'password', 'sex', 'birthday', 'address', 'slogan', 'role'
     ];
 
     /**
@@ -50,7 +54,11 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function product() {
-        return $this->hasMany('App\Product');
+    public function Post() {
+        return $this->hasMany('App\Models\Post');
+    }
+
+    public function Comment() {
+        return $this->hasMany('App\Models\Comment');
     }
 }

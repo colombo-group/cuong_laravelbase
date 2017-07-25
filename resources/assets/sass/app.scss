@@ -39,7 +39,7 @@ a {
     top: 0;
     left: 0;
     padding-top: 50px;
-    min-height: 100%;
+    min-height: 100vh;
     width: 230px;
     z-index: 810;
     -webkit-transition: -webkit-transform 0.3s ease-in-out, width 0.3s ease-in-out;
@@ -72,8 +72,23 @@ a {
             color: #fff;
         }
     }
+    ul.treeview-menu {
+        list-style: none;
+        a {
+            color: #b8c7ce;
+            i.fa.fa-circle-o {
+                font-size: 10px !important;
+                margin-right: 5px;
+            }
+            &:hover {
+                color: #fff;
+            }
+        }
+
+    }
 }
 .content-wrapper{
+    width: auto !important;
     -webkit-transition: -webkit-transform 0.3s ease-in-out, margin 0.3s ease-in-out;
     -moz-transition: -moz-transform 0.3s ease-in-out, margin 0.3s ease-in-out;
     -o-transition: -o-transform 0.3s ease-in-out, margin 0.3s ease-in-out;
@@ -111,4 +126,186 @@ a {
     .filter_area {
         margin-bottom: 20px;
     }
+    th.title {
+        text-align: center;
+    }
 }
+html, body {
+    background-color: #fff;
+    color: #636b6f;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 100;
+    height: 100vh;
+    margin: 0;
+}
+
+.full-height {
+    height: 100vh;
+}
+
+.flex-center {
+    align-items: center;
+    justify-content: center;
+}
+
+.position-ref {
+    position: relative;
+}
+
+.top-right {
+    position: absolute;
+    right: 10px;
+    top: 18px;
+}
+
+.links > a {
+    color: #636b6f;
+    padding: 0 25px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .1rem;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.alert-error {
+    position: absolute;
+    top: 100px;
+    left: 50%;
+    margin-left: -300px;
+    width: 600px;
+    text-align: center;
+    font-size: 18px;
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+ul li {
+    list-style: none;
+}
+
+.content, .content-wrapper {
+    width: 100%;
+    padding: 37px 23px 0px;
+    .container {
+        width: 970px;
+    }
+    h1.title-cate {
+        text-align: center;
+        border-bottom: 2px solid #9a9d9e;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+    .list-post {
+        a.link-img {
+            float : left;
+            width: 150px;
+            img {
+                width: 100%;
+            }
+        }
+        .info {
+            margin-left: 170px;
+        }
+        h2.title {
+            margin: 0px 0px 8px;
+            font-size: 22px;
+        }
+        li.row {
+            margin-bottom: 15px;
+        }
+    }
+    .pani {
+        text-align: center;
+    }
+
+    .info-author {
+        float: left;
+        width: 200px;
+        img {
+            width: 100%;
+        }
+        span.author {
+            display: block;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        span.date {
+            display: block;
+            text-align: center;
+        }
+
+    }
+    .decript {
+        margin-left: 215px;
+        p.summary {
+            text-align: justify;
+            font-size: 15px;
+            font-weight: bold;
+        }
+    }
+}
+.comment {
+    margin-bottom: 100px;
+    .content-cmt, .content-cmt-child {
+        max-width: 100%;
+        min-width: 100%;
+        padding: 5px;
+    }
+    .btn.btn-success {
+        float: right;
+        width: 80px;
+        background: #4a90e2;
+        border: 1px solid #4a90e2;
+    }
+    .inp-cmt-parent {
+        overflow: hidden;
+    }
+    .oup-cmt {
+        clear: both;
+        margin-top: 10px;
+    }
+    i.fa.fa-user {
+        width: 25px;
+        text-align: center;
+        line-height: 25px;
+        background: #ddd;
+        margin-right: 8px;
+    }
+    span.time-create {
+        display: inline-block;
+        margin-left: 20px;
+        position: relative;
+        &:before {
+            content: '.';
+            position: absolute;
+            left: -14px;
+            font-size: 23px;
+            top: -10px;
+        }
+    }
+    .parent-cmt {
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    .con-cmt {
+        background: #f8f8f8;
+        border: 1px solid #dfdfdf;
+        display: block;
+        position: relative;
+        margin: 5px 0 0 0;
+        padding: 10px 15px 0 12px;
+        clear: both;
+        font-size: 14px;
+        color: #333;
+        line-height: 24px;
+        margin-bottom: 15px;
+        span.time-create:before {
+            top: -4px;
+        }
+    }
+}
+

@@ -16,7 +16,6 @@
     function formEnd($data = array(),$seo = 0){
         $html = '';
         if($seo){
-
             /*demo*/
             $html .= dtDatePick($label = "Công bố", $sizeLabel = 2, $name = "created_time", $value = date('Y-m-d H:i:s'),$sizeInput = 5, $comment = 'Chọn thời gian công bố', $sizeComment = 5);
             $html .= hr();
@@ -30,11 +29,13 @@
 
             $html .= dtEditText($label = 'SEO meta description', $sizeLabel = 2, $name = 'seo_description',$value = @$data -> seo_description, $type = 'text', $sizeInput = 10, $placeholder = 'SEO', $rowsTextarea = 5, $commet = '', $sizeComment = 0, $editor = 0);
         }
-        if(@$data->id) {
+        /*if(@$data->id) {
             $html .= '<input type="hidden" value="'.$data->id.'" name="id">';
-        }
-        $html .= '<input type="hidden" name="task" id="task" value="">';
+        }*/
         $html .= csrf_field();
+        if(isset($data)) {
+            $html .= method_field('PUT');
+        }
         $html .= '</form>';
         $html .= '</section>';
         return $html;
@@ -44,25 +45,18 @@
     function dtEditText($label, $sizeLabel = 2, $name, $value, $type = '', $sizeInput = 10, $placeholder = '', $rowsTextarea = 0, $comment = '', $sizeComment = 0, $editor = 0){
         if(!isset($value))
             $value = '';
+        $value = $value ? htmlspecialchars($value) : old($name);
         $html = '<div class="form-group">';
         $html .= '<label class="control-label col-sm-'. $sizeLabel .'">'. $label . '</label>';
         $html .= '<div class="col-sm-'. $sizeInput .'">';
         if($rowsTextarea > 1){
             if(!$editor){
-                $html .=  '<textarea rows="'.$rowsTextarea.'" cols="5" name="'.$name.'" class="form-control" id="'.$name.'" placeholder="'.$placeholder.'">'.$value.'</textarea>';
+                $html .=  '<textarea rows="'.$rowsTextarea.'" cols="5" name="'.$name.'" style="max-width: 100%;" class="form-control" id="'.$name.'" placeholder="'.$placeholder.'">'.$value.'</textarea>';
             } else {
-    //				$html .=  '<textarea rows="10" cols="10" name="'.$name.'" id="'.$name.'" >'.$value.'</textarea>';
-    //				$html .= "<script>CKEDITOR.replace( '".$name."');</script>";
-                $k = 'oFCKeditor_'.$name;
-                $oFCKeditor[$k] = new FCKeditor($name) ;
-                $oFCKeditor[$k]->BasePath	=  '../libraries/wysiwyg_editor/' ;
-                $oFCKeditor[$k]->Value		= stripslashes(@$value);
-                $oFCKeditor[$k]->Width = 100;
-                $oFCKeditor[$k]->Height = $rowsTextarea;
-                $oFCKeditor[$k]->Create() ;
+                $html .=  '<textarea rows="'.$rowsTextarea.'" cols="5" name="'.$name.'" style="max-width: 100%;" class="form-control editor" id="'.$name.'" placeholder="'.$placeholder.'">'.$value.'</textarea>';
             }
         }else{
-            $html .= '<input type="'. $type .'" name="'.$name.'" id="'.$name.'" class="form-control" placeholder="'.$placeholder.'" value="'.htmlspecialchars($value).'"/>';
+            $html .= '<input type="'. $type .'" name="'.$name.'" id="'.$name.'" class="form-control" placeholder="'.$placeholder.'" value="'.$value.'"/>';
         }
         $html .= '</div>';
         if($comment && $sizeComment)
@@ -104,12 +98,12 @@
         $html .=    '</div>';
 
         $html .=    '<div>';
-        $html .=        '<span class="btn default btn-file">';
+        $html .=        '<span class="btn btn-default btn-file">';
         $html .=            '<span class="fileinput-new"> Chọn ảnh </span>';
         $html .=            '<span class="fileinput-exists"> Change </span>';
-        $html .=            '<input type="file" name="image" />';
+        $html .=            '<input type="file" name="image" accept="image/*" />';
         $html .=        '</span>';
-        $html .=        '<a href="#" class="btn red fileinput-exists" data-dismiss="fileinput"> Xóa </a>';
+        $html .=        '<a href="#" class="btn btn-danger fileinput-exists" style="margin-left: 10px;" data-dismiss="fileinput"> Xóa </a>';
         $html .=    '</div>';
         $html .= '</div>';
 
@@ -151,26 +145,28 @@
 
                     foreach ($array_select as $select_item) {
                         $checked = "";
+                        $value_old = $select_item->$field_value ? $select_item->$field_value : old($name);
                         if(!$compare && !$j && !$add_fisrt_option){
                             $checked = "selected=\"selected\"";
                         } else {
                             if($compare === ($select_item->$field_value))
                                 $checked = "selected=\"selected\"";
                         }
-                        $html .= '<option value="'.$select_item->$field_value.'" '. $checked.'>'.ucfirst($select_item -> $field_label).'</option>';
+                        $html .= '<option value="'.$value_old.'" '. $checked.'>'.ucfirst($select_item -> $field_label).'</option>';
                         $j ++;
                     }
                 } else {
                     foreach ($array_select as $key => $name) {
                         if(is_object($name)) {
                             $checked = "";
+                            $value_old = $name->id ? $name->id : old($name);
                             if(!$compare && !$j && !$add_fisrt_option){
                                 $checked = "selected=\"selected\"";
                             } else {
                                 if($compare == $name->id)
                                     $checked = "selected=\"selected\"";
                             }
-                            $html .= '<option value="'.$name->id.'" '. $checked.'>'.$name->name.'</option>';
+                            $html .= '<option value="'.$value_old.'" '. $checked.'>'.$name->name.'</option>';
                             $j ++;
                         }
                         else {
@@ -251,15 +247,11 @@
      * @param string $sort_direct
      * @return string
      */
-    function genarateFormLiting($link = '', $link_edit = '', $prefix = '', $list = array(), $fitler_config = array(), $list_config = array(), $sort_field = '', $sort_direct = '', $pagination){
+    function genarateFormLiting($link_edit = '', $prefix = '', $list = array(), $fitler_config = array(), $list_config = array(), $sort_field = '', $sort_direct = '', $pagination){
         if(!count($list_config)){
             return;
         }
-        /*begin fill part filter*/
-        $html_filter = count($fitler_config)? createFilter($fitler_config,$prefix) : '';
-        /*end fill part filter*/
         $html_begin = '<section class="content">';
-        $html_begin .= '<form action="'.route($link).'" name="adminForm" method="post">';
         $i = 1;
         $arr_head  = array();
         $arr_config = array();
@@ -289,7 +281,6 @@
         /*end fill title in tag th*/
         $html_head = '<table class="table table-bordered table-striped dataTable table-hover"><thead><tr>';
         $html_head .= '<th width="3%">STT</th>';
-        //$html_head .= '<th width="3%"><input type="checkbox" onclick="checkAll('.count($list).')" value="" name="toggle"></th>';
         $html_head .= implode($arr_head, '');
         $html_head .= '</tr></thead>';
         $html_body = '<tbody>';
@@ -301,7 +292,6 @@
                 $link_view = route($link_edit, ['id' => $row->id]);
                 $html_body .= '<tr class="row'.($i%2).'">';
                 $html_body .= '<td align="center">'.($i+1).'<input type="hidden" name="id_'.$i.'" value="'.$row->id.'"/> </td>';
-                //$html_body .= '<td><input type="checkbox" onclick="isChecked(this.checked);" value="'.$row->id.'"  name="id[]" id="cb'.$i.'"> </td>';
                 foreach($arr_config as $col){
                     if(!count($col)){
                         continue;
@@ -333,10 +323,12 @@
                                 break;
                             case 'edit':
                                 $html_body .= edit($link_view);
+                                $html_body .= delete($row->id);
                                 break;
-                            /*case 'reply':
-                                $html_body .= reply("index.php?module=".$module."&view=".$view."&task=reply&id=".$row->id);
-                                break;*/
+                            case 'restore':
+                                $html_body .= restore($link_view);
+                                $html_body .= delete($row->id);
+                                break;
                             case 'datetime':
                                 $html_body .= date('d/m/Y H:i',strtotime($row[$item['field']]));
                                 break;
@@ -412,23 +404,8 @@
         }
         /*end fill data in tag tr*/
         $html_body .= '</tbody></table>';
-        $html_footer = '<div class="footer_form">';
-        /*if(isset($pagination)) {
-            $html_footer .=  $pagination->showPagination();
-        }*/
-        $html_footer .= '</div>';
-        $html_field_change =  count($arr_field_change)?implode($arr_field_change, ','):'';
 
-        $html_footer .=csrf_field();
-        /*$html_footer .='<input type="hidden" value="'.@$sort_field.'" name="sort_field" />';
-        $html_footer .='<input type="hidden" value="'.@$sort_direct.'" name="sort_direct" />';
-        $html_footer .='<input type="hidden" value="'.($i+1).'" name="total">';*/
-        //$html_footer .='<input type="hidden" value="'.FSInput::get('page',0,'int').'" name="page">';
-        /*$html_footer .='<input type="hidden" value="'.$html_field_change.'" name="field_change">';
-        $html_footer .='<input type="hidden" value="" name="task">';
-        $html_footer .='<input type="hidden" value="0" name="boxchecked">';*/
-
-        $html = $html_begin.$html_filter.$html_head.$html_body.$html_footer.'</form>'.$pagination.'</section>';
+        $html = $html_begin.$html_head.$html_body.$pagination.'</section>';
         return $html;
     }
 
@@ -608,7 +585,23 @@
     {
         $html =  "<a title=\"Views\" href=\"$link\">";
         $html .="<i class=\"fa fa-pencil-square-o\" style='font-size: 20px;
-    margin-top: 4px;'></a>";
+    margin-top: 4px;'></i></a>";
+        return $html;
+    }
+
+    function restore($link)
+    {
+        $html =  "<a title=\"Resote\" href=\"$link\">";
+        $html .="<i class=\"fa fa-refresh\" style='font-size: 20px;
+    margin-top: 4px;'></i></a>";
+        return $html;
+    }
+
+    function delete($id)
+    {
+        $html =  "<a title=\"Delete\" href='javascript:void(0)' style='margin-left: 12px;' class='delete_recode' data-id=".$id.">";
+        $html .="<i class=\"fa fa-trash\" style='font-size: 20px;
+    margin-top: 4px;'></i></a>";
         return $html;
     }
 

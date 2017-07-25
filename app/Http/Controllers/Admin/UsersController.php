@@ -3,15 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-
-use App\Http\Requests;
-use Prettus\Validator\Contracts\ValidatorInterface;
-use Prettus\Validator\Exceptions\ValidatorException;
 use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserUpdateRequest;
+
+use App\Http\Requests;
 use App\Contracts\Repositories\UserRepository;
-use App\Validators\UserValidator;
+use App\User;
 
 
 class UsersController extends Controller
@@ -21,16 +18,11 @@ class UsersController extends Controller
      * @var UserRepository
      */
     protected $repository;
+    protected $role = [1 => 'Admin', 2 => 'User'];
 
-    /**
-     * @var UserValidator
-     */
-    protected $validator;
-
-    public function __construct(UserRepository $repository, UserValidator $validator)
+    public function __construct(UserRepository $repository)
     {
         $this->repository = $repository;
-        $this->validator  = $validator;
     }
 
 
@@ -41,17 +33,19 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
         $list = $this->repository->paginate(5);
-
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'data' => $list,
-            ]);
-        }
-
         return view('admin.users.index', compact('list'));
+    }
+
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        return view('admin.users.detail');
     }
 
     /**
@@ -64,33 +58,12 @@ class UsersController extends Controller
     public function store(UserCreateRequest $request)
     {
 
-        try {
+        $data = $request->all();
+        $data['password'] = bcrypt($request->password);
+        $data['role'] = 2;
+        $this->repository->create($data);
 
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_CREATE);
-
-            $user = $this->repository->create($request->all());
-
-            $response = [
-                'message' => 'User created.',
-                'data'    => $user->toArray(),
-            ];
-
-            if ($request->wantsJson()) {
-
-                return response()->json($response);
-            }
-
-            return redirect()->back()->with('message', $response['message']);
-        } catch (ValidatorException $e) {
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
-                ]);
-            }
-
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
-        }
+        return redirect()->route('user.index')->with(['flash_level' => 'success', 'flash_message' => 'User created']);
     }
 
 
@@ -126,9 +99,9 @@ class UsersController extends Controller
     public function edit($id)
     {
 
-        $user = $this->repository->find($id);
+        $data = $this->repository->find($id);
 
-        return view('users.edit', compact('user'));
+        return view('admin.users.detail', ['data' => $data, 'role' => $this->role]);
     }
 
 
@@ -142,36 +115,12 @@ class UsersController extends Controller
      */
     public function update(UserUpdateRequest $request, $id)
     {
-
-        try {
-
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
-
-            $user = $this->repository->update($request->all(), $id);
-
-            $response = [
-                'message' => 'User updated.',
-                'data'    => $user->toArray(),
-            ];
-
-            if ($request->wantsJson()) {
-
-                return response()->json($response);
-            }
-
-            return redirect()->back()->with('message', $response['message']);
-        } catch (ValidatorException $e) {
-
-            if ($request->wantsJson()) {
-
-                return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
-                ]);
-            }
-
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
+        $data = $request->except('password','password_confirmation', '_token', '_method');
+        if ($request->has('password')) {
+            $data['password'] = bcrypt($request->password);
         }
+        $this->repository->update($data, $id);
+        return redirect()->route('user.index')->with(['flash_level' => 'success', 'flash_message' => 'User updated']);
     }
 
 
@@ -186,14 +135,35 @@ class UsersController extends Controller
     {
         $deleted = $this->repository->delete($id);
 
-        if (request()->wantsJson()) {
+        return response()->json([
+            'deleted' => $deleted,
+        ]);
+    }
 
-            return response()->json([
-                'message' => 'User deleted.',
-                'deleted' => $deleted,
-            ]);
+    public function listData() {
+        return redirect()->route('user.index')->with(['flash_level' => 'success', 'flash_message' => 'User deleted.']);
+    }
+
+    public function list_rashedData() {
+        return redirect()->route('user.trashed')->with(['flash_level' => 'success', 'flash_message' => 'User permanently deleted.']);
+    }
+
+    public function trashed() {
+        $list = User::onlyTrashed()->paginate(5);
+        return view('admin.users.trashed', compact('list'));
+    }
+
+    public function restore($id) {
+        $restore = User::withTrashed()->find($id)->restore();
+        if($restore) {
+            return redirect()->route('user.trashed')->with(['flash_level' => 'success', 'flash_message' => 'User restored.']);
         }
+    }
 
-        return redirect()->back()->with('message', 'User deleted.');
+    public function delete($id) {
+        $deleted = User::withTrashed()->find($id)->forceDelete();
+        return response()->json([
+            'deleted' => $deleted,
+        ]);
     }
 }

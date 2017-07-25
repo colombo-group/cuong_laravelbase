@@ -3,16 +3,11 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use Illuminate\Support\Facades\Auth;
-use Prettus\Validator\Contracts\ValidatorInterface;
-use Prettus\Validator\Exceptions\ValidatorException;
-use App\Http\Requests\ProfileCreateRequest;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Contracts\Repositories\ProfileRepository;
-use App\Validators\ProfileValidator;
 
 
 class ProfileController extends Controller
@@ -23,15 +18,9 @@ class ProfileController extends Controller
      */
     protected $repository;
 
-    /**
-     * @var ProfileValidator
-     */
-    protected $validator;
-
-    public function __construct(ProfileRepository $repository, ProfileValidator $validator)
+    public function __construct(ProfileRepository $repository)
     {
         $this->repository = $repository;
-        $this->validator  = $validator;
     }
 
     /**
@@ -57,36 +46,11 @@ class ProfileController extends Controller
      *
      * @return Response
      */
-    public function update(Request $request)
+    public function update(ProfileUpdateRequest $request)
     {
-        try {
+        $id = Auth::user()->id;
+        $this->repository->update($request->all(), $id);
 
-            $this->validator->with($request->all())->passesOrFail(ValidatorInterface::RULE_UPDATE);
-            $id = Auth::user()->id;
-            $profile = $this->repository->update($request->all(), $id);
-
-            $response = [
-                'message' => 'Profile updated.',
-                'data'    => $profile->toArray(),
-            ];
-
-            if ($request->wantsJson()) {
-
-                return response()->json($response);
-            }
-
-            return redirect()->back()->with(['flash_level' => 'success', 'flash_message' => $response['message']]);
-        } catch (ValidatorException $e) {
-
-            if ($request->wantsJson()) {
-
-                return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
-                ]);
-            }
-
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
-        }
+        return redirect()->back()->with(['flash_level' => 'success', 'flash_message' => 'Profile updated.']);
     }
 }

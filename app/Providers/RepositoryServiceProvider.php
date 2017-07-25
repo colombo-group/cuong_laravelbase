@@ -26,6 +26,10 @@ class RepositoryServiceProvider extends ServiceProvider
 
         $this->app->bind(\App\Contracts\Repositories\UserRepository::class,\App\Repositories\Eloquent\UserRepositoryEloquent::class);
         $this->app->bind(\App\Contracts\Repositories\ProfileRepository::class,\App\Repositories\Eloquent\ProfileRepositoryEloquent::class);
+        $this->app->bind(\App\Contracts\Repositories\PostRepository::class, \App\Repositories\Eloquent\PostRepositoryEloquent::class);
+        $this->app->bind(\App\Contracts\Repositories\CatePostRepository::class, \App\Repositories\Eloquent\CatePostRepositoryEloquent::class);
+        $this->app->bind(\App\Contracts\Repositories\PostRepository::class, \App\Repositories\Eloquent\PostRepositoryEloquent::class);
+        $this->app->bind(\App\Contracts\Repositories\CommentRepository::class, \App\Repositories\Eloquent\CommentRepositoryEloquent::class);
         //:end-bindings:
     }
 }

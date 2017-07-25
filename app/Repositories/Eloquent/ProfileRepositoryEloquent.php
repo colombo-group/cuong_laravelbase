@@ -6,7 +6,6 @@ use App\User;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Contracts\Repositories\ProfileRepository;
-use App\Validators\ProfileValidator;
 
 /**
  * Class ProfileRepositoryEloquent
@@ -29,11 +28,6 @@ class ProfileRepositoryEloquent extends BaseRepository implements ProfileReposit
     *
     * @return mixed
     */
-    public function validator()
-    {
-
-        return ProfileValidator::class;
-    }
 
 
     /**
