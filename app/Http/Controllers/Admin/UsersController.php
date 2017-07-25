@@ -60,7 +60,6 @@ class UsersController extends Controller
 
         $data = $request->all();
         $data['password'] = bcrypt($request->password);
-        $data['role'] = 2;
         $this->repository->create($data);
 
         return redirect()->route('user.index')->with(['flash_level' => 'success', 'flash_message' => 'User created']);
